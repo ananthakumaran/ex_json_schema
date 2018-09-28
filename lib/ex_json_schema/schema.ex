@@ -14,18 +14,17 @@ defmodule ExJsonSchema.Schema do
   alias ExJsonSchema.Schema.Draft4
   alias ExJsonSchema.Schema.Root
 
-  @type resolved :: %{String.t => ExJsonSchema.json_value | (Root.t -> {Root.t, resolved})}
+  @type resolved :: %{String.t => ExJsonSchema.data | (Root.t -> {Root.t, resolved})}
 
   @current_draft_schema_url "http://json-schema.org/schema"
   @draft4_schema_url "http://json-schema.org/draft-04/schema"
 
-  @spec resolve(Root.t) :: Root.t | no_return
+  @spec resolve(Root.t | ExJsonSchema.object) :: Root.t | no_return
   def resolve(root = %Root{}), do: resolve_root(root)
 
-  @spec resolve(ExJsonSchema.json) :: Root.t | no_return
   def resolve(schema = %{}), do: resolve_root(%Root{schema: schema})
 
-  @spec get_ref_schema(Root.t, [:root | String.t]) :: ExJsonSchema.json
+  @spec get_ref_schema(Root.t, [:root | String.t]) :: ExJsonSchema.object
   def get_ref_schema(root = %Root{}, [:root | path] = ref) do
     get_ref_schema_with_schema(root.schema, path, ref)
   end
@@ -194,7 +193,7 @@ defmodule ExJsonSchema.Schema do
   end
 
   defp needs_additional_items_attribute?(schema) do
-    Map.has_key?(schema, "items") and not Map.has_key?(schema, "additionalItems")
+    Map.has_key?(schema, "items") and is_list(schema["items"]) and not Map.has_key?(schema, "additionalItems")
   end
 
   defp unescaped_ref_segments(ref) do
