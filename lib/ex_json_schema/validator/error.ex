@@ -62,7 +62,7 @@ defmodule ExJsonSchema.Validator.Error do
   end
 
   defmodule Enum do
-    defstruct([])
+    defstruct([:enum])
   end
 
   defmodule Minimum do

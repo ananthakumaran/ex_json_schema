@@ -386,7 +386,7 @@ defmodule ExJsonSchema.ValidatorTest do
       %{"enum" => ["foo", "bar"]},
       %{"baz" => 1},
       [{"Value is not allowed in enum.", "#"}],
-      [%Error{error: %Error.Enum{}, path: "#"}]
+      [%Error{error: %Error.Enum{enum: ["foo", "bar"]}, path: "#"}]
     )
   end
 
